@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+
+        .calc-container {
+            width: 350px;
+            background: white;
+            border: 1px solid #dfe1e5;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 6px rgba(32,33,36,.28);
+        }
+
+        #display-container {
+            text-align: right;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #dfe1e5;
+            border-radius: 4px;
+            min-height: 60px;
+        }
+
+        #history {
+            font-size: 13px;
+            color: #70757a;
+            height: 18px;
+        }
+
+        #result {
+            font-size: 30px;
+            color: #202124;
+            overflow: hidden;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        button {
+            height: 36px;
+            border: 1px solid #f1f3f4;
+            border-radius: 4px;
+            background-color: #f1f3f4;
+            color: #3c4043;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        button:hover {
+            background-color: #e8eaed;
+            border-color: #dadce0;
+        }
+
+        .btn-number {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .btn-blue {
+            background-color: #4285f4;
+            color: white;
+        }
+
+        .btn-blue:hover {
+            background-color: #1a73e8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calc-container">
+    <div id="display-container">
+        <div id="history"></div>
+        <div id="result">0</div>
+    </div>
+    <div class="button-grid">
+        <button onclick="clearDisplay()">AC</button>
+        <button onclick="deleteLast()">CE</button>
+        <button onclick="appendOperator('%')">%</button>
+        <button onclick="appendOperator('/')">÷</button>
+        
+        <button class="btn-number" onclick="appendNumber('7')">7</button>
+        <button class="btn-number" onclick="appendNumber('8')">8</button>
+        <button class="btn-number" onclick="appendNumber('9')">9</button>
+        <button onclick="appendOperator('*')">×</button>
+        
+        <button class="btn-number" onclick="appendNumber('4')">4</button>
+        <button class="btn-number" onclick="appendNumber('5')">5</button>
+        <button class="btn-number" onclick="appendNumber('6')">6</button>
+        <button onclick="appendOperator('-')">−</button>
+        
+        <button class="btn-number" onclick="appendNumber('1')">1</button>
+        <button class="btn-number" onclick="appendNumber('2')">2</button>
+        <button class="btn-number" onclick="appendNumber('3')">3</button>
+        <button onclick="appendOperator('+')">+</button>
+        
+        <button class="btn-number" onclick="appendNumber('0')">0</button>
+        <button class="btn-number" onclick="appendNumber('.')">.</button>
+        <button class="btn-blue" style="grid-column: span 2;" onclick="calculate()">=</button>
+    </div>
+</div>
+
+<script>
+    let currentInput = "0";
+    let history = "";
+
+    const resultDisplay = document.getElementById('result');
+    const historyDisplay = document.getElementById('history');
+
+    function updateDisplay() {
+        resultDisplay.innerText = currentInput;
+        historyDisplay.innerText = history;
+    }
+
+    function appendNumber(number) {
+        if (currentInput === "0" && number !== ".") {
+            currentInput = number;
+        } else {
+            currentInput += number;
+        }
+        updateDisplay();
+    }
+
+    function appendOperator(op) {
+        history = currentInput + " " + op;
+        currentInput = "0";
+        updateDisplay();
+    }
+
+    function clearDisplay() {
+        currentInput = "0";
+        history = "";
+        updateDisplay();
+    }
+
+    function deleteLast() {
+        currentInput = currentInput.slice(0, -1);
+        if (currentInput === "") currentInput = "0";
+        updateDisplay();
+    }
+
+    function calculate() {
+        try {
+            let expression = history + " " + currentInput;
+            // Basic sanitization and evaluation
+            let finalResult = eval(expression.replace('×', '*').replace('÷', '/').replace('−', '-'));
+            history = expression + " =";
+            currentInput = finalResult.toString();
+            updateDisplay();
+        } catch (e) {
+            currentInput = "Error";
+            updateDisplay();
+        }
+    }
+</script>
+
+</body>
+</html>
