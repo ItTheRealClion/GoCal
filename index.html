@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Google-style Calculator</title>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" disabled>
+        <div class="buttons">
+            <!-- Number and operation buttons -->
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button onclick="appendToDisplay('/')">/</button>
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button onclick="appendToDisplay('*')">*</button>
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button onclick="appendToDisplay('-')">-</button>
+            <button onclick="appendToDisplay('0')">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button onclick="calculate()">=</button>
+            <button onclick="appendToDisplay('+')">+</button>
+            <button onclick="toggleTheme()">Toggle Theme</button>
+        </div>
+        <div class="history">
+            <h3>Calculation History</h3>
+            <ul id="historyList"></ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+/* styles.css */
+body, html {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+    color: black;
+}
+.calculator {
+    max-width: 300px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 2px 2px 12px #aaa;
+}
+input[type="text"] {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    text-align: right;
+}
+button {
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    font-size: 20px;
+}
+.dark {
+    background-color: #333;
+    color: white;
+}
+
+/* script.js */
+let history = [];
+
+function appendToDisplay(value) {
+    document.getElementById('display').value += value;
+}
+
+function calculate() {
+    const display = document.getElementById('display');
+    let result;
+    try {
+        result = eval(display.value);
+        history.push(display.value + ' = ' + result);
+        display.value = result;
+        updateHistory();
+    } catch (error) {
+        display.value = 'Error';
+    }
+}
+
+function clearDisplay() {
+    document.getElementById('display').value = '';
+}
+
+function updateHistory() {
+    const historyList = document.getElementById('historyList');
+    historyList.innerHTML = '';
+    history.forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = entry;
+        historyList.appendChild(li);
+    });
+}
+
+function toggleTheme() {
+    document.body.classList.toggle('dark');
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key.match(/[0-9]/) || ['+', '-', '*', '/', '.'].includes(event.key)) {
+        appendToDisplay(event.key);
+    } else if (event.key === 'Enter') {
+        calculate();
+    } else if (event.key === 'Backspace') {
+        clearDisplay();
+    }
+});
